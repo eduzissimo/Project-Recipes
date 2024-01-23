@@ -22,10 +22,14 @@ function SearchBar() {
       </button>
       {isSearchBarVisible && (
         <div>
-          <input
-            type="text"
-            data-testid="search-input"
-          />
+          <input type="text" data-testid="search-input" />
+          <label htmlFor="ingredient">Ingredient</label>
+          <input type="radio" data-testid="ingredient-search-radio" />
+          <label htmlFor="name">Name</label>
+          <input type="radio" data-testid="name-search-radio" />
+          <label htmlFor="first-letter">First letter</label>
+          <input type="radio" data-testid="first-letter-search-radio" />
+          <button data-testid="exec-search-btn">SEARCH</button>
         </div>
       )}
     </div>
