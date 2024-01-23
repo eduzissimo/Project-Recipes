@@ -1,10 +1,17 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from '../App';
+import { screen, waitFor } from '@testing-library/react';
+import renderWithRouter from './helpers/renderWith';
+import Login from '../Pages/Login/Login';
 
-test('Farewell, front-end', () => {
-  // Este arquivo pode ser modificado ou deletado sem problemas
-  render(<App />);
-  const linkElement = screen.getByText(/TRYBE/i);
-  expect(linkElement).toBeInTheDocument();
+test('Verifica os elementos da página de Login', async () => {
+  const { user } = renderWithRouter(<Login />, { route: '/' });
+
+  const emailInput = screen.getByTestId('email-input');
+  const passwordInput = screen.getByTestId('password-input');
+  const loginButton = screen.getByTestId('login-submit-btn');
+
+  await user.type(emailInput, 'teste@teste.com');
+  await user.type(passwordInput, '1234567');
+  await user.click(loginButton);
+
+  await waitFor(() => expect(window.location.pathname).toBe('/meals'));
 });
