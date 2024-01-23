@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import renderWithRouter from './helpers/renderWith';
-import Login from '../Pages/Login/Login';
+import Login from '../Pages/Login';
 
 test('Verifica os elementos da página de Login', async () => {
   const { user } = renderWithRouter(<Login />, { route: '/' });

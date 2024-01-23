@@ -1,6 +1,6 @@
 import Header from '../Components/Header';
 
-function Meals() {
+function DoneRecipes() {
   return (
     <div data-testid="page-title">
       <Header />
@@ -8,4 +8,4 @@ function Meals() {
   );
 }
 
-export default Meals;
+export default DoneRecipes;
