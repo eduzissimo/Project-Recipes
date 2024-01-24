@@ -1,5 +1,7 @@
 import { useState, useCallback, ChangeEvent } from 'react';
 
+const FIRST_LETTER = 'first-letter';
+
 interface UseInputSearchProps {
   defaultSearchMethod: string;
   fetchFunction: (searchType: string, inputValue: string) => Promise<any>;
@@ -23,19 +25,27 @@ function useInputSearch({ defaultSearchMethod, fetchFunction }: UseInputSearchPr
     [],
   );
 
-  const handleSearch = useCallback(async () => {
+  const handleSearch = async () => {
     try {
-      if (searchMethod === 'first-letter' && searchValue.length !== 1) {
+      if (searchMethod === FIRST_LETTER && searchValue.length !== 1) {
         window.alert('Your search must have only 1 (one) character');
         return;
       }
-
       const response = await fetchFunction(searchMethod, searchValue);
+      const data = await response.json();
+      if (data && data.meals && data.meals.length === 0) {
+        window.alert("Sorry, we haven't found any recipes for these filters");
+        return;
+      }
+      if (data && data.drinks && data.drinks.length === 0) {
+        window.alert("Sorry, we haven't found any recipes for these filters");
+        return;
+      }
       console.log(response);
     } catch (error) {
       console.error(error);
     }
-  }, [searchMethod, searchValue, fetchFunction]);
+  };
 
   return {
     searchMethod,
