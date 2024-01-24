@@ -3,9 +3,6 @@ import Footer from '../Components/Footer';
 import renderWithRouter from './helpers/renderWith';
 
 describe('Testa o componente Footer.', () => {
-//   const DRINKS_BOTTOM_BTN = 'drinks-bottom-btn';
-//   const MEALS_BOTTOM_BTN = 'meals-bottom-btn';
-
   test('Testando o footer', () => {
     renderWithRouter(<Footer />);
     const drinksBtn = screen.getByRole('button', { name: /drinks/i });
