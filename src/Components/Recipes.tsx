@@ -1,7 +1,9 @@
 import React from 'react';
 import useFetch from '../hooks/useFetch';
+import { useNavigate } from 'react-router-dom';
 
 function Recipes() {
+  const navigate = useNavigate();
   const { pathname } = window.location;
   const isMealsPage = pathname.includes('/meals');
   const API = isMealsPage
@@ -10,15 +12,23 @@ function Recipes() {
 
   const { data, loading, error } = useFetch(API);
 
+  
   if (loading) {
     return <p>Loading...</p>;
   }
-
+  
   if (error) {
     return <p>{error}</p>;
   }
+  
   const recipes = isMealsPage ? data?.meals : data?.drinks;
+  console.log(recipes);
 
+  const handleCardClick = (recipeId: string, isMealsPage: boolean) => {
+    const route = isMealsPage ? `/meals/${recipeId}` : `/drinks/${recipeId}`;
+    navigate(route);
+  };
+  
   return (
     <div>
       <h1>Recipes</h1>
@@ -27,13 +37,16 @@ function Recipes() {
           <div
             key={ recipe.idMeal || recipe.idDrink }
             data-testid={ `${index}-recipe-card` }
+            onClick={ () => handleCardClick(isMealsPage ? recipe.idMeal : recipe.idDrink, isMealsPage) }
           >
             <img
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
               alt={ recipe.strMeal || recipe.strDrink }
               data-testid={ `${index}-card-img` }
             />
-            <p data-testid={ `${index}-card-name` }>
+            <p
+              data-testid={ `${index}-card-name` }
+            >
               {recipe.strMeal || recipe.strDrink}
             </p>
           </div>
