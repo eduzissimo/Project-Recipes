@@ -1,5 +1,5 @@
 import React from 'react';
-import useFetch from './useFetch';
+import useFetch from '../hooks/useFetch';
 
 function Recipes() {
   const { pathname } = window.location;
