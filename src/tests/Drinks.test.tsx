@@ -7,7 +7,7 @@ describe('Testa a página /drinks', () => {
     renderWithRouter(<Recipes />, { route: '/drinks' });
 
     await waitFor(async () => {
-      for (let index = 0; index < 12; index++) {
+      for (let index = 0; index < 12; index += 1) {
         const recipeCard = screen.getByTestId(`${index}-recipe-card`);
         const recipeImg = screen.getByTestId(`${index}-card-img`);
         const recipeName = screen.getByTestId(`${index}-card-name`);
