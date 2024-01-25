@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useInputSearch from '../hooks/useInputSearch';
 import searchIcon from '../images/searchIcon.svg';
 
@@ -16,52 +17,60 @@ function SearchBar({ fetchFunction }: SearchBarProps) {
     handleSearch,
   } = useInputSearch({ defaultSearchMethod: 'ingredient', fetchFunction });
 
+  const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
+
+  const handleSearchBarClick = () => {
+    setIsSearchBarVisible(!isSearchBarVisible);
+  };
+
   return (
     <div>
-      <button type="button" onClick={ handleSearch }>
+      <button type="button" onClick={ handleSearchBarClick }>
         <img src={ searchIcon } alt="search icon" data-testid="search-top-btn" />
       </button>
-      <div>
-        <input
-          type="text"
-          value={ searchValue }
-          onChange={ handleSearchInputChange }
-          data-testid="search-input"
-        />
-        <label htmlFor="ingredient">
+      { isSearchBarVisible && (
+        <div>
           <input
-            type="radio"
-            value="ingredient"
-            checked={ searchMethod === 'ingredient' }
-            onChange={ handleSearchMethodChange }
-            data-testid="ingredient-search-radio"
+            type="text"
+            value={ searchValue }
+            onChange={ handleSearchInputChange }
+            data-testid="search-input"
           />
-          Ingredient
-        </label>
-        <label htmlFor="name">
-          <input
-            type="radio"
-            value="name"
-            checked={ searchMethod === 'name' }
-            onChange={ handleSearchMethodChange }
-            data-testid="name-search-radio"
-          />
-          Name
-        </label>
-        <label htmlFor={ FIRST_LETTER }>
-          <input
-            type="radio"
-            value={ FIRST_LETTER }
-            checked={ searchMethod === FIRST_LETTER }
-            onChange={ handleSearchMethodChange }
-            data-testid="first-letter-search-radio"
-          />
-          First letter
-        </label>
-        <button onClick={ handleSearch } data-testid="exec-search-btn">
-          SEARCH
-        </button>
-      </div>
+          <label htmlFor="ingredient">
+            <input
+              type="radio"
+              value="ingredient"
+              checked={ searchMethod === 'ingredient' }
+              onChange={ handleSearchMethodChange }
+              data-testid="ingredient-search-radio"
+            />
+            Ingredient
+          </label>
+          <label htmlFor="name">
+            <input
+              type="radio"
+              value="name"
+              checked={ searchMethod === 'name' }
+              onChange={ handleSearchMethodChange }
+              data-testid="name-search-radio"
+            />
+            Name
+          </label>
+          <label htmlFor={ FIRST_LETTER }>
+            <input
+              type="radio"
+              value={ FIRST_LETTER }
+              checked={ searchMethod === FIRST_LETTER }
+              onChange={ handleSearchMethodChange }
+              data-testid="first-letter-search-radio"
+            />
+            First letter
+          </label>
+          <button onClick={ handleSearch } data-testid="exec-search-btn">
+            SEARCH
+          </button>
+        </div>
+      )}
     </div>
   );
 }

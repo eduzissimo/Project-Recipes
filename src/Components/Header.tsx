@@ -77,10 +77,27 @@ function Header() {
   return (
     <div data-testid="header-container">
       <header>
-        <button type="button" onClick={ handleProfileClick }>
-          <img src={ profileIcon } alt="profile icon" data-testid="profile-top-btn" />
+        <button
+          type="button"
+          onClick={ handleProfileClick }
+        >
+          <img
+            src={ profileIcon }
+            alt="profile icon"
+            data-testid="profile-top-btn"
+          />
         </button>
-        <h1 data-testid="page-title">{getTitlePages()}</h1>
+        {(pathname === '/profile' || pathname === '/favorite-recipes') ? (
+          <h1>
+            { getTitlePages() }
+          </h1>
+        ) : (
+          <h1
+            data-testid="page-title"
+          >
+            { getTitlePages() }
+          </h1>
+        )}
         {shouldShowSearchIcon() && (
           <span>
             <SearchBar
