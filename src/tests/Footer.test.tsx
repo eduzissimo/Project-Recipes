@@ -1,0 +1,20 @@
+import { screen } from '@testing-library/react';
+import Footer from '../Components/Footer';
+import renderWithRouter from './helpers/renderWith';
+
+describe('Testa o componente Footer.', () => {
+  test('Testando o footer', () => {
+    renderWithRouter(<Footer />);
+    const drinksBtn = screen.getByRole('button', { name: /drinks/i });
+    const mealsBtn = screen.getByRole('button', { name: /meals/i });
+    const drinkIcon = screen.getByRole('img', { name: /drinks/i });
+    const mealIcon = screen.getByRole('img', { name: /meals/i });
+    const navigation = screen.getByRole('navigation');
+
+    expect(drinksBtn).toBeInTheDocument();
+    expect(mealsBtn).toBeInTheDocument();
+    expect(drinkIcon).toBeInTheDocument();
+    expect(mealIcon).toBeInTheDocument();
+    expect(navigation).toBeInTheDocument();
+  });
+});
