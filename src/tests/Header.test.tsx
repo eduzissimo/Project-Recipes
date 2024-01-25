@@ -6,6 +6,7 @@ describe('Testa o componente Header', () => {
   const PROFILE_BUTTON_TESTID = 'profile-top-btn';
   const PAGE_TITLE_TESTID = 'page-title';
   const SEARCH_TOP_BUTTON_TESTID = 'search-top-btn';
+  const SEARCH_INPUT_TESTID = 'search-input';
 
   test('Verifica se o componente /meals contém os data-testids', () => {
     renderWithRouter(<Header />, { route: '/meals' });
@@ -49,5 +50,32 @@ describe('Testa o componente Header', () => {
     await user.click(profileButton);
 
     await waitFor(() => expect(window.location.pathname).toBe('/profile'));
+  });
+  test('Verifica pesquisa por nome no input', async () => {
+    const { user } = renderWithRouter(<Header />, { route: '/meals' });
+    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
+
+    expect(searchTopButton).toBeInTheDocument();
+    await user.click(searchTopButton);
+
+    const searchInput = screen.getByTestId(SEARCH_INPUT_TESTID);
+    expect(searchInput).toBeInTheDocument();
+
+    await user.type(searchInput, 'a');
+    await waitFor(() => expect(window.location.pathname).toBe('/meals'));
+  });
+
+  test('Verifica se clicar no botão de pesquisa sem a barra de pesquisa visível não causa redirecionamento', async () => {
+    const { user } = renderWithRouter(<Header />, { route: '/meals' });
+    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
+
+    expect(searchTopButton).toBeInTheDocument();
+    await user.click(searchTopButton);
+
+    const searchInput = screen.getByTestId(SEARCH_INPUT_TESTID);
+    expect(searchInput).toBeInTheDocument();
+
+    await user.click(searchTopButton);
+    await waitFor(() => expect(window.location.pathname).not.toBe('/search'));
   });
 });
