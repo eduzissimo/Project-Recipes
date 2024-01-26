@@ -1,16 +1,12 @@
-import useFetch from '../hooks/useFetch';
+import Fetcher from '../utils/fetcher';
 
 function FilterRecipes() {
-  const { pathname } = window.location;
-  const isMealsPage = pathname.includes('/meals');
+  const mealsURLbtn = 'https://www.themealdb.com/api/json/v1/1/list.php?c=list';
+  const drinksURLbtn = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
 
-  const categoriesAPI = isMealsPage
-    ? 'https://www.themealdb.com/api/json/v1/1/list.php?c=list'
-    : 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
+  const { data, loading, error, isMealsPage } = Fetcher(mealsURLbtn, drinksURLbtn);
 
-  const { data, loading, error } = useFetch(categoriesAPI);
-
-  const categories = data?.meals || data?.drinks;
+  const categories = isMealsPage ? data?.meals : data?.drinks;
 
   if (loading) {
     return <p>Loading...</p>;
@@ -31,6 +27,9 @@ function FilterRecipes() {
             {category.strCategory}
           </button>
         ))}
+      </div>
+      <div>
+        <button data-testid="All-category-filter">All</button>
       </div>
     </div>
   );

@@ -1,13 +1,11 @@
-import useFetch from '../hooks/useFetch';
+import Fetcher from '../utils/fetcher';
+import FilterRecipes from './FilterRecipes';
 
 function Recipes() {
-  const { pathname } = window.location;
-  const isMealsPage = pathname.includes('/meals');
-  const API = isMealsPage
-    ? 'https://www.themealdb.com/api/json/v1/1/search.php?s='
-    : 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+  const mealsURL = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+  const drinksURL = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
 
-  const { data, loading, error } = useFetch(API);
+  const { data, loading, error, isMealsPage } = Fetcher(mealsURL, drinksURL);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -20,6 +18,7 @@ function Recipes() {
 
   return (
     <div className="recipesContainer">
+      <FilterRecipes />
       <h1 className="title">Recipes</h1>
       <div>
         {recipes?.slice(0, 12).map((recipe: any, index: any) => (
