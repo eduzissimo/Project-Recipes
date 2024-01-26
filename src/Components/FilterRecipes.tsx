@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import Fetcher from '../utils/fetcher';
 
-function FilterRecipes() {
-  const mealsURLbtn = 'https://www.themealdb.com/api/json/v1/1/list.php?c=list';
-  const drinksURLbtn = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
+function FilterRecipes({ setRecipes }:any) {
+  const [selectCategory, setSelectCategory] = useState('');
 
-  const { data, loading, error, isMealsPage } = Fetcher(mealsURLbtn, drinksURLbtn);
+  const clearFilter = () => {
+    setSelectCategory('');
+    setRecipes([]);
+  };
 
-  const categories = isMealsPage ? data?.meals : data?.drinks;
+  const { data: categories, loading, error } = Fetcher('categories');
 
   if (loading) {
     return <p>Loading...</p>;
@@ -22,6 +25,7 @@ function FilterRecipes() {
         {categories.slice(0, 5).map((category:any) => (
           <button
             key={ category.strCategory }
+            onClick={ () => setSelectCategory(category.strCategory) }
             data-testid={ `${category.strCategory}-category-filter` }
           >
             {category.strCategory}
@@ -29,8 +33,9 @@ function FilterRecipes() {
         ))}
       </div>
       <div>
-        <button data-testid="All-category-filter">All</button>
+        <button data-testid="All-category-filter" onClick={ clearFilter }>All</button>
       </div>
+      {}
     </div>
   );
 }

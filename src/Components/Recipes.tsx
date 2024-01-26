@@ -1,11 +1,8 @@
 import Fetcher from '../utils/fetcher';
-import FilterRecipes from './FilterRecipes';
 
-function Recipes() {
-  const mealsURL = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-  const drinksURL = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-
-  const { data, loading, error, isMealsPage } = Fetcher(mealsURL, drinksURL);
+function Recipes({ recipes }:any) {
+  const { data: search, loading, error } = Fetcher('search');
+  const recipesData = recipes.length > 0 ? recipes : search;
 
   if (loading) {
     return <p>Loading...</p>;
@@ -14,15 +11,15 @@ function Recipes() {
   if (error) {
     return <p>{error}</p>;
   }
-  const recipes = isMealsPage ? data?.meals : data?.drinks;
+
+  // adicionar a logica do handler
 
   return (
     <div className="recipesContainer">
-      <FilterRecipes />
       <h1 className="title">Recipes</h1>
       <div>
-        {recipes?.slice(0, 12).map((recipe: any, index: any) => (
-          <div
+        {recipesData?.slice(0, 12).map((recipe: any, index: any) => (
+          <div // alterar de div para btn
             className="recipesCard"
             key={ recipe.idMeal || recipe.idDrink }
             data-testid={ `${index}-recipe-card` }
