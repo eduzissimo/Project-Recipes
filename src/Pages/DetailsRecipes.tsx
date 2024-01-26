@@ -1,9 +1,9 @@
-import { RecipesDetails } from "../Components/RecipesDetails";
+import { RecipesDetails } from '../Components/RecipesDetails';
 
 export function DetailsRecipes() {
-    return (
-        <div>
-            <RecipesDetails />
-        </div>
-    )
+  return (
+    <div>
+      <RecipesDetails />
+    </div>
+  );
 }

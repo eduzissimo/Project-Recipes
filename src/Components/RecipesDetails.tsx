@@ -1,27 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import YouTube from 'react-youtube';
+import { styled } from 'styled-components';
+
+const ContainerCard = styled.div`
+  white-space: nowrap;
+  width: 319px;
+  overflow-x: auto;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+`;
+
+const RecomendationCard = styled.div`
+  display: inline-block;
+`;
 
 export function RecipesDetails() {
   const { id } = useParams<{ id: string }>();
   const [recipeDetails, setRecipeDetails] = useState<any>(null);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
   const navigate = useNavigate(); // Adicionando o hook useNavigate
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
       const isMealPage = window.location.pathname.includes('/meals');
-      const API = isMealPage
-        ? `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-        : `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
+      const mealAPI = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
+      const drinkAPI = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
 
       try {
-        const response = await fetch(API);
+        const response = await fetch(isMealPage ? mealAPI : drinkAPI);
         const data = await response.json();
-        isMealPage ? setRecipeDetails(data.meals[0]) : setRecipeDetails(data.drinks[0]);
+        setRecipeDetails(isMealPage ? data.meals[0] : data.drinks[0]);
+        // Realizar requisição para recomendações
+        const recommendationsAPI = isMealPage
+          ? 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s='
+          : 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+        const recommendationsResponse = await fetch(recommendationsAPI);
+        const recommendationsData = await recommendationsResponse.json();
+        setRecommendations(isMealPage
+          ? recommendationsData.drinks : recommendationsData.meals);
       } catch (error) {
-        // Tratar erros de requisição
         console.error('Erro ao buscar detalhes da receita:', error);
-        // Navegar de volta para a página anterior em caso de erro
         navigate(-1);
       }
     };
@@ -29,19 +49,21 @@ export function RecipesDetails() {
     fetchRecipeDetails();
   }, [id, navigate]);
 
+  console.log(recommendations);
+
   if (!recipeDetails) {
     return <p>Loading...</p>;
   }
 
-  const { strMealThumb, strMeal, strCategory, strInstructions, strYoutube, strDrinkThumb, strDrink, strAlcoholic } = recipeDetails;
+  const { strMealThumb, strMeal, strCategory, strInstructions,
+    strYoutube, strDrinkThumb, strDrink, strAlcoholic } = recipeDetails;
 
-  // Obtendo as chaves que contêm os ingredientes e as medidas
-  const ingredientsKeys = Object.keys(recipeDetails).filter(key => key.startsWith('strIngredient') && recipeDetails[key]);
-  const measuresKeys = Object.keys(recipeDetails).filter(key => key.startsWith('strMeasure') && recipeDetails[key]);
-
-  // Mapeando as chaves dos ingredientes e medidas para os seus valores correspondentes
-  const ingredients = ingredientsKeys.map(key => recipeDetails[key]);
-  const measures = measuresKeys.map(key => recipeDetails[key]);
+  const ingredientsKeys = Object.keys(recipeDetails)
+    .filter((key) => key.startsWith('strIngredient') && recipeDetails[key]);
+  const measuresKeys = Object.keys(recipeDetails)
+    .filter((key) => key.startsWith('strMeasure') && recipeDetails[key]);
+  const ingredients = ingredientsKeys.map((key) => recipeDetails[key]);
+  const measures = measuresKeys.map((key) => recipeDetails[key]);
 
   const getYouTubeVideoId = (url: string) => {
     const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
@@ -51,41 +73,64 @@ export function RecipesDetails() {
   return (
     <div>
       <img
-        src={strMealThumb || strDrinkThumb}
-        width={360}
+        src={ strMealThumb || strDrinkThumb }
+        width={ 360 }
         alt="Foto Da Refeição"
         data-testid="recipe-photo"
       />
       <h2
         data-testid="recipe-title"
       >
-        {strMeal || strDrink}
+        { strMeal || strDrink }
       </h2>
-      {strCategory && <span data-testid="recipe-category" >{strAlcoholic || strCategory}</span>}
-      <ul
-      
-      >
-        {/* Renderizando a lista de ingredientes e medidas */}
-        {ingredients.map((ingredient, index) => (
+      { strCategory
+        && <span data-testid="recipe-category">{strAlcoholic || strCategory}</span> }
+      <ul>
+        { ingredients.map((ingredient, index) => (
           <li
-          key={`ingredient-${index}`}
-          data-testid={`${index}-ingredient-name-and-measure`}
+            key={ `ingredient-${index}` }
+            data-testid={ `${index}-ingredient-name-and-measure` }
           >
-            {ingredient} - {measures[index]}
+            { ingredient }
+            -
+            { measures[index] }
           </li>
-        ))}
+        )) }
       </ul>
       <p
         data-testid="instructions"
       >
-        {strInstructions}
+        { strInstructions }
       </p>
       <div
-      data-testid="video"
+        data-testid="video"
       >
-        {strYoutube && <YouTube videoId={getYouTubeVideoId(strYoutube)} opts={{ width: '360', height: '415' }}/>}
+        { strYoutube && <YouTube
+          videoId={ getYouTubeVideoId(strYoutube) }
+          opts={ { width: '360', height: '415' } }
+        /> }
       </div>
-      <button onClick={() => navigate(-1)}>voltar</button>
+      <h3>Recomendações</h3>
+      <ContainerCard>
+        { recommendations.slice(0, 6).map((recommendation, index) => (
+          <RecomendationCard
+            key={ recommendation.idMeal || recommendation.idDrink }
+            data-testid={ `${index}-recommendation-card` }
+          >
+            <img
+              src={ recommendation.strMealThumb || recommendation.strDrinkThumb }
+              alt={ recommendation.strMeal || recommendation.strDrink }
+              width={ 160 }
+            />
+            <p
+              data-testid={ `${index}-recommendation-title` }
+            >
+              { recommendation.strMeal || recommendation.strDrink }
+            </p>
+          </RecomendationCard>
+        )) }
+      </ContainerCard>
+      <button onClick={ () => navigate(-1) }>voltar</button>
     </div>
   );
-};
+}
