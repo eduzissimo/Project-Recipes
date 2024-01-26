@@ -10,10 +10,23 @@ const ContainerCard = styled.div`
   position: relative;
   left: 50%;
   transform: translate(-50%, 0);
+  bottom: 5px;
 `;
 
 const RecomendationCard = styled.div`
   display: inline-block;
+`;
+
+const StartRecipeButton = styled.button`
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+`;
+
+const GoBackButton = styled.button`
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
 `;
 
 export function RecipesDetails() {
@@ -130,7 +143,12 @@ export function RecipesDetails() {
           </RecomendationCard>
         )) }
       </ContainerCard>
-      <button onClick={ () => navigate(-1) }>voltar</button>
+      <GoBackButton onClick={ () => navigate(-1) }>voltar</GoBackButton>
+      <StartRecipeButton
+        data-testid="start-recipe-btn"
+      >
+        Start Recipe
+      </StartRecipeButton>
     </div>
   );
 }
