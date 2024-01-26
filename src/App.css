@@ -37,6 +37,41 @@
   font-weight: 900;
 }
 
+.recipesImg {
+  border-radius: 20px;
+  height: 300px;
+  width: 300px;
+}
+
+.recipesText {
+  font-size: 25px;
+  margin: 10px 0 30px;
+  text-align: center;
+}
+
+.recipesCard {
+  border-radius: 10px;
+  display: inline-block;
+  margin: 0 1.1%;
+}
+
+.recipesContainer {
+  margin: 5%;
+  padding: 21px;
+}
+
+header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 3%;
+}
+
+
+h1 {
+  font-size: 40px;
+}
+
 @keyframes shake {
 
   0% {

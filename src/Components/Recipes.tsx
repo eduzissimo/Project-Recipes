@@ -1,14 +1,8 @@
-import React from 'react';
-import useFetch from '../hooks/useFetch';
+import Fetcher from '../utils/fetcher';
 
-function Recipes() {
-  const { pathname } = window.location;
-  const isMealsPage = pathname.includes('/meals');
-  const API = isMealsPage
-    ? 'https://www.themealdb.com/api/json/v1/1/search.php?s='
-    : 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-
-  const { data, loading, error } = useFetch(API);
+function Recipes({ recipes }:any) {
+  const { data: search, loading, error } = Fetcher('search');
+  const recipesData = recipes.length > 0 ? recipes : search;
 
   if (loading) {
     return <p>Loading...</p>;
@@ -17,23 +11,26 @@ function Recipes() {
   if (error) {
     return <p>{error}</p>;
   }
-  const recipes = isMealsPage ? data?.meals : data?.drinks;
+
+  // adicionar a logica do handler
 
   return (
-    <div>
-      <h1>Recipes</h1>
+    <div className="recipesContainer">
+      <h1 className="title">Recipes</h1>
       <div>
-        {recipes?.slice(0, 12).map((recipe: any, index: any) => (
-          <div
+        {recipesData?.slice(0, 12).map((recipe: any, index: any) => (
+          <div // alterar de div para btn
+            className="recipesCard"
             key={ recipe.idMeal || recipe.idDrink }
             data-testid={ `${index}-recipe-card` }
           >
             <img
+              className="recipesImg"
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
               alt={ recipe.strMeal || recipe.strDrink }
               data-testid={ `${index}-card-img` }
             />
-            <p data-testid={ `${index}-card-name` }>
+            <p className="recipesText" data-testid={ `${index}-card-name` }>
               {recipe.strMeal || recipe.strDrink}
             </p>
           </div>
