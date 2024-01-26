@@ -1,16 +1,10 @@
-import React from 'react';
+import Fetcher from '../utils/fetcher';
 import { useNavigate } from 'react-router-dom';
-import useFetch from '../hooks/useFetch';
 
-function Recipes() {
+function Recipes({ recipes }:any) {
+  const { data: search, loading, error } = Fetcher('search');
   const navigate = useNavigate();
-  const { pathname } = window.location;
-  const isMealsPage = pathname.includes('/meals');
-  const API = isMealsPage
-    ? 'https://www.themealdb.com/api/json/v1/1/search.php?s='
-    : 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-
-  const { data, loading, error } = useFetch(API);
+  const recipesData = recipes.length > 0 ? recipes : search;
 
   if (loading) {
     return <p>Loading...</p>;
@@ -20,36 +14,33 @@ function Recipes() {
     return <p>{error}</p>;
   }
 
-  const recipes = isMealsPage ? data?.meals : data?.drinks;
-  console.log(recipes);
-
   const handleCardClick = (recipeId: string, isMealsPg: boolean) => {
     const route = isMealsPg ? `/meals/${recipeId}` : `/drinks/${recipeId}`;
     navigate(route);
   };
 
   return (
-    <div>
-      <h1>Recipes</h1>
+    <div className="recipesContainer">
+      <h1 className="title">Recipes</h1>
       <div>
-        {recipes?.slice(0, 12).map((recipe: any, index: any) => (
-          <button
+        {recipesData?.slice(0, 12).map((recipe: any, index: any) => (
+          <div // alterar de div para btn
+            className="recipesCard"
             key={ recipe.idMeal || recipe.idDrink }
             data-testid={ `${index}-recipe-card` }
             onClick={ () => handleCardClick(isMealsPage
               ? recipe.idMeal : recipe.idDrink, isMealsPage) }
           >
             <img
+              className="recipesImg"
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
               alt={ recipe.strMeal || recipe.strDrink }
               data-testid={ `${index}-card-img` }
             />
-            <p
-              data-testid={ `${index}-card-name` }
-            >
+            <p className="recipesText" data-testid={ `${index}-card-name` }>
               {recipe.strMeal || recipe.strDrink}
             </p>
-          </button>
+          </div>
         ))}
       </div>
     </div>
