@@ -2,7 +2,7 @@ import Fetcher from '../utils/fetcher';
 
 function Recipes({ recipes }:any) {
   const { data: search, loading, error } = Fetcher('search');
-  const recipesData = recipes.length > 0 ? recipes : search;
+  const recipesData = recipes && recipes.length > 0 ? recipes : search;
 
   if (loading) {
     return <p>Loading...</p>;
