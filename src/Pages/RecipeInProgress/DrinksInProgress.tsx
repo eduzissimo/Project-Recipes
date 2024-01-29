@@ -4,19 +4,31 @@ import { drinksInProgress, apiDrinksCategory } from '../../hooks/useApiFilter';
 import { RecipeDetails } from '../../types';
 
 function DrinksInProgress() {
-  const { id } = useParams();
+  const params = useParams() as { id: string };
   const [recipeDetails, setRecipeDetails] = useState<RecipeDetails | null>(null);
+  const [ingredientsFilter, setIngredientsFilter] = useState<string[]>([]);
   const categoryList = apiDrinksCategory();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await drinksInProgress({ id });
+      const result = await drinksInProgress(params);
       setRecipeDetails(result);
     };
-
     fetchData();
-  }, [id]);
+  }, [params]);
 
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      setIngredientsFilter(await drinksInProgress(params));
+    };
+    fetchIngredients();
+  }, [params]);
+
+  const ingredientsArray = Object.keys(ingredientsFilter).filter(
+    (key: any) => ingredientsFilter[key] !== null
+    && ingredientsFilter[key] !== ''
+    && key.startsWith('strIngredient'),
+  ).map((key: any) => ingredientsFilter[key]);
   if (!recipeDetails || !categoryList) {
     return <div>Receita não encontrada.</div>;
   }
@@ -26,7 +38,6 @@ function DrinksInProgress() {
     strDrink,
     strAlcoholic,
     strInstructions,
-    ingredientsList,
   } = recipeDetails;
 
   return (
@@ -45,9 +56,19 @@ function DrinksInProgress() {
         Alcoólico:
         {strAlcoholic}
       </p>
+      <h2> Ingredients: </h2>
       <ul>
-        {ingredientsList && ingredientsList.map((ingredient: string, index: number) => (
-          <li key={ index }>{ingredient}</li>
+        {ingredientsArray.map((ingredient: string, index: number) => (
+          <li key={ index }>
+            <label
+              data-testid={ `ingredient-step-${index}` }
+            >
+              <input
+                type="checkbox"
+              />
+              {ingredient}
+            </label>
+          </li>
         ))}
       </ul>
       <p

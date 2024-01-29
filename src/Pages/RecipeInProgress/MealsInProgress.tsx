@@ -4,19 +4,31 @@ import { mealsInProgress, apiMealsCategory } from '../../hooks/useApiFilter';
 import { RecipeDetails } from '../../types';
 
 function MealsInProgress() {
-  const { id } = useParams();
+  const params = useParams() as { id: string };
   const [recipeDetails, setRecipeDetails] = useState<RecipeDetails | null>(null);
+  const [ingredientsFilter, setIngredientsFilter] = useState<string[]>([]);
   const categoryList = apiMealsCategory();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await mealsInProgress({ id });
+      const result = await mealsInProgress(params);
       setRecipeDetails(result);
     };
-
     fetchData();
-  }, [id]);
+  }, [params]);
 
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      setIngredientsFilter(await mealsInProgress(params));
+    };
+    fetchIngredients();
+  }, [params]);
+
+  const ingredientsArray = Object.keys(ingredientsFilter).filter(
+    (key: any) => ingredientsFilter[key] !== null
+    && ingredientsFilter[key] !== ''
+    && key.startsWith('strIngredient'),
+  ).map((key: any) => ingredientsFilter[key]);
   if (!recipeDetails || !categoryList) {
     return <div>Receita não encontrada.</div>;
   }
@@ -26,7 +38,6 @@ function MealsInProgress() {
     strMeal,
     strCategory,
     strInstructions,
-    ingredientsList,
   } = recipeDetails;
 
   return (
@@ -42,11 +53,25 @@ function MealsInProgress() {
         {strCategory}
       </p>
       <ul>
-        {ingredientsList && ingredientsList.map((ingredient: string, index: number) => (
-          <li key={ index }>{ingredient}</li>
+        <h2>Ingredients:</h2>
+        {ingredientsArray.map((ingredient: string, index: number) => (
+          <li key={ index }>
+            <label
+              data-testid={ `ingredient-step-${index}` }
+            >
+              <input
+                type="checkbox"
+              />
+              {ingredient}
+            </label>
+          </li>
         ))}
       </ul>
-      <p data-testid="instructions">{strInstructions}</p>
+      <p
+        data-testid="instructions"
+      >
+        {strInstructions}
+      </p>
       <button data-testid="share-btn">Compartilhar</button>
       <button data-testid="favorite-btn">Favoritar</button>
       <button data-testid="finish-recipe-btn">Finalizar Receita</button>

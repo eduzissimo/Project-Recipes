@@ -104,5 +104,5 @@ export type RecipeDetails = {
   strCategory?: string;
   strAlcoholic?: string;
   strInstructions?: string;
-  ingredientsList?: string[];
+  strIngredients?: string[];
 };
