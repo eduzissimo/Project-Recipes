@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Fetcher from '../utils/fetcher';
 
 function FilterRecipes({ setRecipes }:any) {
@@ -10,6 +10,20 @@ function FilterRecipes({ setRecipes }:any) {
   };
 
   const { data: categories, loading, error } = Fetcher('categories');
+
+  const { data } = Fetcher('filter', selectCategory);
+
+  const handleClick = (category: string) => {
+    if (category === selectCategory) {
+      clearFilter();
+    } else {
+      setSelectCategory(category);
+    }
+  };
+
+  useEffect(() => {
+    setRecipes(data);
+  }, [data]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -25,7 +39,7 @@ function FilterRecipes({ setRecipes }:any) {
         {categories.slice(0, 5).map((category:any) => (
           <button
             key={ category.strCategory }
-            onClick={ () => setSelectCategory(category.strCategory) }
+            onClick={ () => handleClick(category.strCategory) }
             data-testid={ `${category.strCategory}-category-filter` }
           >
             {category.strCategory}

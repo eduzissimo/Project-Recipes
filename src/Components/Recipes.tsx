@@ -1,16 +1,11 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useFetch from '../hooks/useFetch';
+import Fetcher from '../utils/fetcher';
 
-function Recipes() {
+function Recipes({ recipes }:any) {
+  const { data: search, loading, error, isMealsPage } = Fetcher('search');
+  const recipesData = recipes && recipes.length > 0 ? recipes : search;
+
   const navigate = useNavigate();
-  const { pathname } = window.location;
-  const isMealsPage = pathname.includes('/meals');
-  const API = isMealsPage
-    ? 'https://www.themealdb.com/api/json/v1/1/search.php?s='
-    : 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-
-  const { data, loading, error } = useFetch(API);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -20,31 +15,31 @@ function Recipes() {
     return <p>{error}</p>;
   }
 
-  const recipes = isMealsPage ? data?.meals : data?.drinks;
-  console.log(recipes);
-
   const handleCardClick = (recipeId: string, isMealsPg: boolean) => {
     const route = isMealsPg ? `/meals/${recipeId}` : `/drinks/${recipeId}`;
     navigate(route);
   };
 
   return (
-    <div>
-      <h1>Recipes</h1>
+    <div className="recipesContainer">
+      <h1 className="title">Recipes</h1>
       <div>
-        {recipes?.slice(0, 12).map((recipe: any, index: any) => (
+        {recipesData?.slice(0, 12).map((recipe: any, index: any) => (
           <button
+            className="recipesCard"
             key={ recipe.idMeal || recipe.idDrink }
             data-testid={ `${index}-recipe-card` }
             onClick={ () => handleCardClick(isMealsPage
               ? recipe.idMeal : recipe.idDrink, isMealsPage) }
           >
             <img
+              className="recipesImg"
               src={ recipe.strMealThumb || recipe.strDrinkThumb }
               alt={ recipe.strMeal || recipe.strDrink }
               data-testid={ `${index}-card-img` }
             />
             <p
+              className="recipesText"
               data-testid={ `${index}-card-name` }
             >
               {recipe.strMeal || recipe.strDrink}

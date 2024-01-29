@@ -11,7 +11,7 @@ function Fetcher(options: URLoptions, complement = '') {
 
   const data = isMealsPage ? result?.meals : result?.drinks;
 
-  return { data, loading, error };
+  return { data, loading, error, isMealsPage };
 }
 
 export default Fetcher;
