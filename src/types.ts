@@ -96,12 +96,13 @@ export type DrinkType = {
 
 export type MealOrDrinkType = MealType | DrinkType;
 
-export type FavoriteRecipeTypes = {
-  id: string;
-  type: string;
-  nationality: string;
-  category: string;
-  alcoholicOrNot: string;
-  name: string;
-  image: string;
+export type RecipeDetails = {
+  strMealThumb?: string;
+  strMeal?: string;
+  strDrinkThumb?: string;
+  strDrink?: string;
+  strCategory?: string;
+  strAlcoholic?: string;
+  strInstructions?: string;
+  ingredientsList?: string[];
 };

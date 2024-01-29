@@ -23,7 +23,7 @@ function FilterRecipes({ setRecipes }:any) {
 
   useEffect(() => {
     setRecipes(data);
-  }, [data]);
+  }, [data, setRecipes]);
 
   if (loading) {
     return <p>Loading...</p>;
