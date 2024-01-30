@@ -9,6 +9,7 @@ import DoneRecipes from './Pages/DoneRecipes';
 import Layout from './Components/Layout';
 import { NotFound } from './Pages/NotFound';
 import { DetailsRecipes } from './Pages/DetailsRecipes';
+import RecipeInProgress from './Pages/RecipeInProgress/RecipeInProgress';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route path="/done-recipes" element={ <DoneRecipes /> } />
         <Route path="/meals/:id" element={ <DetailsRecipes /> } />
         <Route path="/drinks/:id" element={ <DetailsRecipes /> } />
+        <Route path="/meals/:id/in-progress" element={ <RecipeInProgress /> } />
+        <Route path="/drinks/:id/in-progress" element={ <RecipeInProgress /> } />
         <Route path="*" element={ <NotFound /> } />
       </Route>
     </Routes>
