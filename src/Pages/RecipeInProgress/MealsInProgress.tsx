@@ -11,7 +11,7 @@ function MealsInProgress() {
   const [recipeDetails, setRecipeDetails] = useState<any>('');
   const [ingredientsFilter, setIngredientsFilter] = useState<any>('');
   const [checkedIngredients, setCheckedIngredients] = useState<string[]>([]);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const [copyText, setCopyText] = useState(false);
   const [allIngredientsChecked, setAllIngredientsChecked] = useState(false);
   const categoryList = apiMealsCategory();
@@ -38,7 +38,7 @@ function MealsInProgress() {
     }
     const favorites = JSON.parse(localStorage.getItem('favoriteRecipes') || '[]');
     const isFav = favorites.some((recipe: FavoriteRecipeType) => recipe.id === params.id);
-    setIsFavorite(isFav);
+    setIsFavorited(isFav);
   }, [params]);
 
   useEffect(() => { // esse é para salvar o progresso no localStorage
@@ -59,7 +59,7 @@ function MealsInProgress() {
       name: recipeDetails.strMeal,
       image: recipeDetails.strMealThumb,
     };
-    if (isFavorite) {
+    if (isFavorited) {
       const updatedFavorites = favorites.filter(
         (recipe: any) => recipe.id !== recipeFavDetails.id,
       );
@@ -68,7 +68,7 @@ function MealsInProgress() {
       const updatedFavorites = [...favorites, recipeFavDetails];
       localStorage.setItem('favoriteRecipes', JSON.stringify(updatedFavorites));
     }
-    setIsFavorite((prevState) => !prevState);
+    setIsFavorited((state) => !state);
   };
 
   const handleShareClick = () => {
@@ -158,7 +158,7 @@ function MealsInProgress() {
       >
         <img
           data-testid="favorite-btn"
-          src={ isFavorite ? blackHeart : whiteHeart }
+          src={ isFavorited ? blackHeart : whiteHeart }
           alt="Favorite"
         />
       </button>
