@@ -106,3 +106,13 @@ export type RecipeDetails = {
   strInstructions?: string;
   strIngredients?: string[];
 };
+
+export type FavoriteRecipeType = {
+  id: string;
+  type: string;
+  nationality: string;
+  category: string;
+  alcoholicOrNot: string;
+  name: string;
+  image: string;
+};

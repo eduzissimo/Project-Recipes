@@ -5,11 +5,9 @@ export async function apiMealsCategory() {
 }
 
 export async function apiDrinksCategory() {
-  const URL = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list';
-  const response = await fetch(URL);
+  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
   const data = await response.json();
-  const filterData = data.drinks;
-  return filterData;
+  return data.drinks;
 }
 
 export async function mealsInProgress(params: any) {
@@ -22,6 +20,5 @@ export async function drinksInProgress(params: any) {
   const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${params.id}`);
   const data = await response.json();
   const filterData = data.drinks[0];
-  console.log(filterData);
   return filterData;
 }
