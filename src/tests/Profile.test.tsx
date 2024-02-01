@@ -1,10 +1,10 @@
 import { screen } from '@testing-library/dom';
 import renderWithRouter from './helpers/renderWith';
-import Profile from '../Pages/Profile';
+import App from '../App';
 
 describe('Testa o componente Profile', () => {
-  test('Verifica se o componente contém os data-testids', () => {
-    renderWithRouter(<Profile />);
+  it('Verifica se o componente contém os data-testids', () => {
+    renderWithRouter(<App />, { route: '/profile' });
 
     const profileEmail = screen.getByTestId('profile-email');
     const profileDoneBtn = screen.getByTestId('profile-done-btn');
@@ -17,8 +17,8 @@ describe('Testa o componente Profile', () => {
     expect(profileLogoutBtn).toBeInTheDocument();
   });
 
-  test('Verifica se ao clickar no botão de done recipes, é redirecionado para a página /done-recipes', async () => {
-    const { user } = renderWithRouter(<Profile />);
+  it('Verifica se ao clickar no botão de done recipes, é redirecionado para a página /done-recipes', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/profile' });
 
     const profileDoneBtn = screen.getByTestId('profile-done-btn');
     expect(profileDoneBtn).toBeInTheDocument();
@@ -28,8 +28,8 @@ describe('Testa o componente Profile', () => {
     expect(window.location.pathname).toBe('/done-recipes');
   });
 
-  test('Verifica se ao clickar no botão de favorite recipes, é redirecionado para a página /favorite-recipes', async () => {
-    const { user } = renderWithRouter(<Profile />);
+  it('Verifica se ao clickar no botão de favorite recipes, é redirecionado para a página /favorite-recipes', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/profile' });
 
     const profileFavoriteBtn = screen.getByTestId('profile-favorite-btn');
     expect(profileFavoriteBtn).toBeInTheDocument();
@@ -39,8 +39,8 @@ describe('Testa o componente Profile', () => {
     expect(window.location.pathname).toBe('/favorite-recipes');
   });
 
-  test('Verifica se ao clickar no botão de logout, é redirecionado para a página /', async () => {
-    const { user } = renderWithRouter(<Profile />);
+  it('Verifica se ao clickar no botão de logout, é redirecionado para a página /', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/profile' });
 
     const profileLogoutBtn = screen.getByTestId('profile-logout-btn');
     expect(profileLogoutBtn).toBeInTheDocument();
@@ -50,11 +50,11 @@ describe('Testa o componente Profile', () => {
     expect(window.location.pathname).toBe('/');
   });
 
-  test('Verifica se o e-mail salvo no LocalStorage é renderizado', () => {
+  it('Verifica se o e-mail salvo no LocalStorage é renderizado', () => {
     const user = { email: 'email@mail.com' };
     localStorage.setItem('user', JSON.stringify(user));
 
-    renderWithRouter(<Profile />);
+    renderWithRouter(<App />, { route: '/profile' });
     const profileEmail = screen.getByTestId('profile-email');
     expect(profileEmail).toHaveTextContent('email@mail.com');
   });

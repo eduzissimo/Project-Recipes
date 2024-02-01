@@ -25,8 +25,16 @@ function SearchBar({ fetchFunction }: SearchBarProps) {
 
   return (
     <div>
-      <button type="button" onClick={ handleSearchBarClick }>
-        <img src={ searchIcon } alt="search icon" data-testid="search-top-btn" />
+      <button
+        data-testid="visible-button"
+        type="button"
+        onClick={ handleSearchBarClick }
+      >
+        <img
+          src={ searchIcon }
+          alt="search icon"
+          data-testid="search-top-btn"
+        />
       </button>
       { isSearchBarVisible && (
         <div>

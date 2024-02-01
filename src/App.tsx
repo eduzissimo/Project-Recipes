@@ -19,14 +19,14 @@ function App() {
         <Route path="/profile" element={ <Profile /> } />
         <Route path="/meals" element={ <Meals /> } />
         <Route path="/drinks" element={ <Drinks /> } />
-        <Route path="/favorite-recipes" element={ <FavoriteRecipes /> } />
-        <Route path="/done-recipes" element={ <DoneRecipes /> } />
-        <Route path="/meals/:id" element={ <DetailsRecipes /> } />
-        <Route path="/drinks/:id" element={ <DetailsRecipes /> } />
-        <Route path="/meals/:id/in-progress" element={ <RecipeInProgress /> } />
-        <Route path="/drinks/:id/in-progress" element={ <RecipeInProgress /> } />
-        <Route path="*" element={ <NotFound /> } />
       </Route>
+      <Route path="/favorite-recipes" element={ <FavoriteRecipes /> } />
+      <Route path="/done-recipes" element={ <DoneRecipes /> } />
+      <Route path="/meals/:id" element={ <DetailsRecipes /> } />
+      <Route path="/drinks/:id" element={ <DetailsRecipes /> } />
+      <Route path="/meals/:id/in-progress" element={ <RecipeInProgress /> } />
+      <Route path="/drinks/:id/in-progress" element={ <RecipeInProgress /> } />
+      <Route path="*" element={ <NotFound /> } />
     </Routes>
   );
 }
