@@ -108,4 +108,45 @@ const mealsCategory = {
   ],
 };
 
-export { mealsData, mealsCategory };
+const mealsByFirstLetter = {
+  meals: [
+    {
+      strMeal: 'Corba',
+    },
+    {
+      strMeal: 'Sushi',
+    },
+    {
+      strMeal: 'Burek',
+    },
+    {
+      strMeal: 'Bistek',
+    },
+    {
+      strMeal: 'Tamiya',
+    },
+    {
+      strMeal: 'Kumpir',
+    },
+    {
+      strMeal: 'Wontons',
+    },
+    {
+      strMeal: 'Lasagne',
+    },
+    {
+      strMeal: 'Kafteji',
+    },
+    {
+      strMeal: 'Big Mac',
+    },
+    {
+      strMeal: 'Poutine',
+    },
+    {
+      strMeal: 'Koshari',
+    },
+  ],
+};
+
+export { mealsData, mealsCategory, mealsByFirstLetter };

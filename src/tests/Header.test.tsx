@@ -1,81 +1,69 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import renderWithRouter from './helpers/renderWith';
-import Header from '../Components/Header';
+import App from '../App';
+import chickenMeals from './helpers/mocks/chickenMeals';
+import { mealsCategory } from './helpers/mocks/dataMeals';
 
 describe('Testa o componente Header', () => {
   const PROFILE_BUTTON_TESTID = 'profile-top-btn';
   const PAGE_TITLE_TESTID = 'page-title';
   const SEARCH_TOP_BUTTON_TESTID = 'search-top-btn';
-  const SEARCH_INPUT_TESTID = 'search-input';
+  const CHICKEN_MEALS = { json: async () => chickenMeals } as Response;
+  const MEALS_CATEGORY = { json: async () => mealsCategory } as Response;
 
-  test('Verifica se o componente /meals contém os data-testids', () => {
-    renderWithRouter(<Header />, { route: '/meals' });
-    const profileButton = screen.getByTestId(PROFILE_BUTTON_TESTID);
-    const pageTitle = screen.getByTestId(PAGE_TITLE_TESTID);
-    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
-
-    expect(profileButton).toBeInTheDocument();
-    expect(pageTitle).toBeInTheDocument();
-    expect(searchTopButton).toBeInTheDocument();
+  beforeEach(() => {
+    vi.spyOn(global, 'fetch')
+      .mockResolvedValueOnce(CHICKEN_MEALS)
+      .mockResolvedValueOnce(MEALS_CATEGORY);
   });
+  test('Verifica se o botão de profile leva pra rota certa', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/meals' });
+    });
 
-  test('Verifica se o componente /drinks contém os data-testids', () => {
-    renderWithRouter(<Header />, { route: '/drinks' });
+    const profileBtn = await screen.findByTestId(PROFILE_BUTTON_TESTID);
 
-    const profileButton = screen.getByTestId(PROFILE_BUTTON_TESTID);
-    const pageTitle = screen.getByTestId(PAGE_TITLE_TESTID);
-    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
-
-    expect(profileButton).toBeInTheDocument();
-    expect(pageTitle).toBeInTheDocument();
-    expect(searchTopButton).toBeInTheDocument();
-  });
-
-  test('Verifica se o componente /done-recipes contém os data-testids', () => {
-    renderWithRouter(<Header />, { route: '/done-recipes' });
-
-    const profileButton = screen.getByTestId(PROFILE_BUTTON_TESTID);
-    const pageTitle = screen.getByTestId(PAGE_TITLE_TESTID);
-
-    expect(profileButton).toBeInTheDocument();
-    expect(pageTitle).toBeInTheDocument();
-  });
-
-  test('Verifica se ao clickar no botão de perfil, é redirecionado para a página /profile', async () => {
-    const { user } = renderWithRouter(<Header />, { route: '/meals' });
-
-    const profileButton = screen.getByTestId(PROFILE_BUTTON_TESTID);
-    expect(profileButton).toBeInTheDocument();
-
-    await user.click(profileButton);
-
+    await userEvent.click(profileBtn);
     await waitFor(() => expect(window.location.pathname).toBe('/profile'));
   });
-  test('Verifica pesquisa por nome no input', async () => {
-    const { user } = renderWithRouter(<Header />, { route: '/meals' });
-    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
 
-    expect(searchTopButton).toBeInTheDocument();
-    await user.click(searchTopButton);
+  test('Verifica se o botão de search desaparece na rota /profile', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/meals' });
+    });
 
-    const searchInput = screen.getByTestId(SEARCH_INPUT_TESTID);
-    expect(searchInput).toBeInTheDocument();
+    const profileBtn = await screen.findByTestId(PROFILE_BUTTON_TESTID);
+    const searchBtn = await screen.findByTestId(SEARCH_TOP_BUTTON_TESTID);
 
-    await user.type(searchInput, 'a');
-    await waitFor(() => expect(window.location.pathname).toBe('/meals'));
+    await userEvent.click(profileBtn);
+    await waitFor(() => expect(searchBtn).not.toBeInTheDocument());
   });
 
-  test('Verifica se clicar no botão de pesquisa sem a barra de pesquisa visível não causa redirecionamento', async () => {
-    const { user } = renderWithRouter(<Header />, { route: '/meals' });
-    const searchTopButton = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
+  test('Verifica se na rota /meals o texto Meals aparece no header além do ícon de busca e perfil', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/meals' });
+    });
 
-    expect(searchTopButton).toBeInTheDocument();
-    await user.click(searchTopButton);
+    const pageTitles = screen.getAllByTestId(PAGE_TITLE_TESTID);
+    const searchBtn = screen.getByTestId(SEARCH_TOP_BUTTON_TESTID);
+    const profileBtn = screen.getByTestId(PROFILE_BUTTON_TESTID);
 
-    const searchInput = screen.getByTestId(SEARCH_INPUT_TESTID);
-    expect(searchInput).toBeInTheDocument();
+    expect(pageTitles[0]).toHaveTextContent('Meals');
+    expect(searchBtn).toBeInTheDocument();
+    expect(profileBtn).toBeInTheDocument();
+  });
 
-    await user.click(searchTopButton);
-    await waitFor(() => expect(window.location.pathname).not.toBe('/search'));
+  test('Verifica se na rota /favorite-recipes o texto Favorite Recipes aparece no header além do ícon de perfil', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/favorite-recipes' });
+    });
+
+    const profileBtn = await screen.findByTestId(PROFILE_BUTTON_TESTID);
+    const pageTitle = await screen.findByTestId(PAGE_TITLE_TESTID);
+
+    expect(pageTitle).toHaveTextContent('Favorite Recipes');
+    expect(profileBtn).toBeInTheDocument();
   });
 });

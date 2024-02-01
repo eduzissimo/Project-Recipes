@@ -16,6 +16,7 @@ export async function mealsInProgress(params: any) {
   const filterData = data.meals[0];
   return filterData;
 }
+
 export async function drinksInProgress(params: any) {
   const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${params.id}`);
   const data = await response.json();

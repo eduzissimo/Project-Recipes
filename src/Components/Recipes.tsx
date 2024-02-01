@@ -21,7 +21,7 @@ function Recipes({ recipes }:any) {
   };
 
   return (
-    <div className="recipesContainer">
+    <span>
       <h1 className="title">Recipes</h1>
       <div>
         {recipesData?.slice(0, 12).map((recipe: any, index: any) => (
@@ -47,7 +47,7 @@ function Recipes({ recipes }:any) {
           </button>
         ))}
       </div>
-    </div>
+    </span>
   );
 }
 
