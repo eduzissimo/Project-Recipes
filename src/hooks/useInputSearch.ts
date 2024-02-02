@@ -25,14 +25,16 @@ function useInputSearch({ defaultSearchMethod, fetchFunction }: UseInputSearchPr
     [],
   );
 
-  const handleSearch = async () => {
+  const handleSearch = async (setRecipes: (arg0: any) => void) => {
     try {
       if (searchMethod === FIRST_LETTER && searchValue.length !== 1) {
         window.alert('Your search must have only 1 (one) character');
         return;
       }
       const response = await fetchFunction(searchMethod, searchValue);
+
       const data = await response.json();
+
       if (data && data.meals && data.meals.length === 0) {
         window.alert("Sorry, we haven't found any recipes for these filters");
         return;
@@ -41,7 +43,8 @@ function useInputSearch({ defaultSearchMethod, fetchFunction }: UseInputSearchPr
         window.alert("Sorry, we haven't found any recipes for these filters");
         return;
       }
-      console.log(response);
+
+      setRecipes(data.meals || data.drinks);
     } catch (error) {
       console.error(error);
     }

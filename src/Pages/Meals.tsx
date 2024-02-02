@@ -8,7 +8,7 @@ function Meals() {
 
   return (
     <div data-testid="page-title">
-      <Header />
+      <Header setRecipes={ setRecipes } />
       <FilterRecipes setRecipes={ setRecipes } />
       <Recipes recipes={ recipes } />
     </div>

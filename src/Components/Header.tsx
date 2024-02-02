@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 
 const FIRST_LETTER = 'first-letter';
 
-function Header() {
+function Header({ setRecipes }:any) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -103,6 +103,7 @@ function Header() {
             <SearchBar
               fetchFunction={ pathname === '/meals' ? fetchMeals
                 : fetchDrinks }
+              setRecipes={ setRecipes }
             />
           </span>
         )}

@@ -4,6 +4,7 @@ import Fetcher from '../utils/fetcher';
 function Recipes({ recipes }:any) {
   const { data: search, loading, error, isMealsPage } = Fetcher('search');
   const recipesData = recipes && recipes.length > 0 ? recipes : search;
+
   const navigate = useNavigate();
   if (loading) {
     return <p>Loading...</p>;
