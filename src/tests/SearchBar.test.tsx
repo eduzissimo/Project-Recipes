@@ -13,11 +13,10 @@ const searchInputTestId = 'search-input';
 const ingredientBtnTestId = 'ingredient-search-radio';
 const nameBtnTestId = 'name-search-radio';
 const firstLetterBtnTestId = 'first-letter-search-radio';
-const ALERT_MESSAGE = "Sorry, we haven't found any recipes for these filters.";
+const ALERT_MESSAGE = "Sorry, we haven't found any recipes for these filters";
+const FIRST_LETTER_MESSAGE = 'Your search must have only 1 (one) character';
 
 describe('Testes do componente SearchBar', () => {
-  // Testes para os meals
-
   test('Verifica busca por ingrediente em meals', async () => {
     const MOCK_RESPONSE = {
       ok: true,
@@ -44,34 +43,6 @@ describe('Testes do componente SearchBar', () => {
 
     const chickenMeals = await screen.findAllByTestId(/card-name/i);
     expect(chickenMeals).toHaveLength(12);
-  });
-
-  test('Verifica busca por nome em meals', async () => {
-    const MOCK_RESPONSE = {
-      ok: true,
-      status: 200,
-      json: async () => mealsByName,
-    } as Response;
-
-    vi.spyOn(global, 'fetch').mockResolvedValueOnce(MOCK_RESPONSE);
-
-    await act(async () => {
-      renderWithRouter(<App />, { route: '/meals' });
-    });
-
-    const searchIconBtn = await screen.findByTestId(searchIconTestId);
-    await userEvent.click(searchIconBtn);
-
-    const searchInput = await screen.findByTestId(searchInputTestId);
-    const nameRadioBtn = await screen.findByTestId(nameBtnTestId);
-    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
-
-    await userEvent.type(searchInput, 'alfredo');
-    await userEvent.click(nameRadioBtn);
-    await userEvent.click(searchBTn);
-
-    const alfredoMeals = await screen.findAllByTestId(/card-name/i);
-    expect(alfredoMeals).toHaveLength(12);
   });
 
   // testes para os drinks
@@ -104,7 +75,36 @@ describe('Testes do componente SearchBar', () => {
     expect(orangeDrinks).toHaveLength(12);
   });
 
-  test('Verifica busca por primeira letra em drinks', async () => {
+  test('Verifica busca por nome em meals', async () => {
+    const MOCK_RESPONSE = {
+      ok: true,
+      status: 200,
+      json: async () => mealsByName,
+    } as Response;
+
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(MOCK_RESPONSE);
+
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/meals' });
+    });
+
+    const searchIconBtn = await screen.findByTestId(searchIconTestId);
+    await userEvent.click(searchIconBtn);
+
+    const searchInput = await screen.findByTestId(searchInputTestId);
+    const nameRadioBtn = await screen.findByTestId(nameBtnTestId);
+    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
+
+    await userEvent.type(searchInput, 'Tamiya');
+    await userEvent.click(nameRadioBtn);
+    await userEvent.click(searchBTn);
+
+    const tamiyaMeal = await screen.findByTestId(/recipe-photo/i);
+    expect(tamiyaMeal).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/meals/53026');
+  });
+
+  test('Verifica busca por letra em drinks', async () => {
     const MOCK_RESPONSE = {
       ok: true,
       status: 200,
@@ -128,11 +128,91 @@ describe('Testes do componente SearchBar', () => {
     await userEvent.click(nameRadioBtn);
     await userEvent.click(searchBTn);
 
-    const orangeDrinks = await screen.findByText(/b-52/i);
-    expect(orangeDrinks).toBeInTheDocument();
+    const b52Drink = await screen.findByText(/b-52/i);
+    expect(b52Drink).toBeInTheDocument();
   });
 
-  test('Verifica alert quando busca está vazia', async () => {
+  test('Verifica  busca por nome em drinks', async () => {
+    const MOCK_RESPONSE = {
+      ok: true,
+      status: 200,
+      json: async () => drinksByFirstLetter,
+    } as Response;
+
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(MOCK_RESPONSE);
+
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/drinks' });
+    });
+
+    const searchIconBtn = await screen.findByTestId(searchIconTestId);
+    await userEvent.click(searchIconBtn);
+
+    const searchInput = await screen.findByTestId(searchInputTestId);
+    const nameRadioBtn = await screen.findByTestId(nameBtnTestId);
+    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
+
+    await userEvent.type(searchInput, 'b-52');
+    await userEvent.click(nameRadioBtn);
+    await userEvent.click(searchBTn);
+
+    const b52Drink = await screen.findByText(/b-52/i);
+    expect(b52Drink).toBeInTheDocument();
+  });
+
+  test('Verifica alert do drinks no filtro name', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/drinks' });
+    });
+
+    const searchIconBtn = await screen.findByTestId(searchIconTestId);
+    await userEvent.click(searchIconBtn);
+
+    const nameRadioBtn = await screen.findByTestId(nameBtnTestId);
+    await userEvent.click(nameRadioBtn);
+
+    const inputBtn = await screen.findByTestId(searchInputTestId);
+    await userEvent.click(inputBtn);
+
+    await userEvent.type(inputBtn, 'asdashudashd');
+
+    const exerSearch = await screen.findByTestId(searchInputBtnTestId);
+    await userEvent.click(exerSearch);
+
+    const alert = vi.spyOn(window, 'alert');
+
+    waitFor(() => {
+      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
+    }, { timeout: 1000 });
+  });
+
+  test('Verifica alert do drinks quando digita mais de 1 character', async () => {
+    await act(async () => {
+      renderWithRouter(<App />, { route: '/drinks' });
+    });
+
+    const searchIconBtn = await screen.findByTestId(searchIconTestId);
+    await userEvent.click(searchIconBtn);
+
+    const firstLetterBtn = await screen.findByTestId(firstLetterBtnTestId);
+    await userEvent.click(firstLetterBtn);
+
+    const inputBtn = await screen.findByTestId(searchInputTestId);
+    await userEvent.click(inputBtn);
+
+    await userEvent.type(inputBtn, 'aaa');
+
+    const exerSearch = await screen.findByTestId(searchInputBtnTestId);
+    await userEvent.click(exerSearch);
+
+    const alert = vi.spyOn(window, 'alert');
+
+    await waitFor(() => {
+      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
+    }, { timeout: 1000 });
+  });
+
+  test('Verifica alert do meals quando digita mais de 1 character', async () => {
     await act(async () => {
       renderWithRouter(<App />, { route: '/meals' });
     });
@@ -140,68 +220,21 @@ describe('Testes do componente SearchBar', () => {
     const searchIconBtn = await screen.findByTestId(searchIconTestId);
     await userEvent.click(searchIconBtn);
 
-    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
+    const firstLetterBtn = await screen.findByTestId(firstLetterBtnTestId);
+    await userEvent.click(firstLetterBtn);
+
+    const inputBtn = await screen.findByTestId(searchInputTestId);
+    await userEvent.click(inputBtn);
+
+    await userEvent.type(inputBtn, 'asdasdasdad');
+
+    const exerSearch = await screen.findByTestId(searchInputBtnTestId);
+    await userEvent.click(exerSearch);
 
     const alert = vi.spyOn(window, 'alert');
 
-    await userEvent.click(searchBTn);
-
     waitFor(() => {
-      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
-    });
-
-    const ingredientRadioBtn = await screen.findByTestId(ingredientBtnTestId);
-    await userEvent.click(ingredientRadioBtn);
-
-    waitFor(() => {
-      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
-    });
-  });
-
-  test('Verifica alert quando busca está vazia e opção escolhida', async () => {
-    await act(async () => {
-      renderWithRouter(<App />, { route: '/drinks' });
-    });
-
-    const searchIconBtn = await screen.findByTestId(searchIconTestId);
-    await userEvent.click(searchIconBtn);
-
-    const ingredientRadioBtn = await screen.findByTestId(ingredientBtnTestId);
-    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
-
-    const alert = vi.spyOn(window, 'alert');
-
-    await userEvent.click(ingredientRadioBtn);
-    await userEvent.click(searchBTn);
-
-    waitFor(() => {
-      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
-    });
-  });
-
-  test('Verifica alert quando busca está vazia', async () => {
-    await act(async () => {
-      renderWithRouter(<App />, { route: '/drinks' });
-    });
-
-    const searchIconBtn = await screen.findByTestId(searchIconTestId);
-    await userEvent.click(searchIconBtn);
-
-    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
-
-    const alert = vi.spyOn(window, 'alert');
-
-    await userEvent.click(searchBTn);
-
-    waitFor(() => {
-      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
-    });
-
-    const ingredientRadioBtn = await screen.findByTestId(ingredientBtnTestId);
-    await userEvent.click(ingredientRadioBtn);
-
-    waitFor(() => {
-      expect(alert).toHaveBeenCalledWith(ALERT_MESSAGE);
-    });
+      expect(alert).toHaveBeenCalledWith(FIRST_LETTER_MESSAGE);
+    }, { timeout: 1000 });
   });
 });
