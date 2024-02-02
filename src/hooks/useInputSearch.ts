@@ -33,18 +33,16 @@ function useInputSearch({ defaultSearchMethod, fetchFunction }: UseInputSearchPr
       }
       const response = await fetchFunction(searchMethod, searchValue);
 
-      const data = await response.json();
-
-      if (data && data.meals && data.meals.length === 0) {
+      if (response && response.meals && response.meals.length === 0) {
         window.alert("Sorry, we haven't found any recipes for these filters");
         return;
       }
-      if (data && data.drinks && data.drinks.length === 0) {
+      if (response && response.drinks && response.drinks.length === 0) {
         window.alert("Sorry, we haven't found any recipes for these filters");
         return;
       }
 
-      setRecipes(data.meals || data.drinks);
+      setRecipes(response.meals || response.drinks);
     } catch (error) {
       console.error(error);
     }
