@@ -4,6 +4,11 @@ import { drinksInProgress, apiDrinksCategory } from '../../hooks/useApiFilter';
 import { FavoriteRecipeType } from '../../types';
 import blackHeart from '../../images/blackHeartIcon.svg';
 import whiteHeart from '../../images/whiteHeartIcon.svg';
+import styled from 'styled-components';
+
+const ImageRecipe = styled.img`
+  width: 100%;
+`;
 
 function DrinksInProgress() {
   const params = useParams() as { id: string };
@@ -124,7 +129,7 @@ function DrinksInProgress() {
 
   return (
     <div>
-      <img
+      <ImageRecipe
         src={ strDrinkThumb }
         alt="Recipe"
         data-testid="recipe-photo"

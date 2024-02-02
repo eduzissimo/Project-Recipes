@@ -1,12 +1,14 @@
+import { FavoritRecipes } from '../Components/FavoritRecipes';
 import Header from '../Components/Header';
 
 function FavoriteRecipes() {
   return (
     <div>
+      <Header />
       <h1 data-testid="page-title">
         Favorite Recipes
       </h1>
-      <Header />
+      <FavoritRecipes />
     </div>
   );
 }
