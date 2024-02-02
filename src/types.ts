@@ -116,3 +116,11 @@ export type FavoriteRecipeType = {
   name: string;
   image: string;
 };
+
+export type Recipe = {
+  image: string;
+  name: string;
+  category: string;
+  doneDate: string;
+  tags: string[];
+};

@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import YouTube from 'react-youtube';
 import { styled } from 'styled-components';
+import YouTube from 'react-youtube';
+import blackHeart from '../images/blackHeartIcon.svg';
+import whiteHeart from '../images/whiteHeartIcon.svg';
+import StartContinueButton from './StartContinueButton';
+import styles from '../Styles/RecipeDetails.module.css';
 
 const ContainerCard = styled.div`
   white-space: nowrap;
@@ -17,12 +21,6 @@ const RecomendationCard = styled.div`
   display: inline-block;
 `;
 
-const StartRecipeButton = styled.button`
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
-`;
-
 const GoBackButton = styled.button`
   position: fixed;
   bottom: 0px;
@@ -30,22 +28,22 @@ const GoBackButton = styled.button`
 `;
 
 export function RecipesDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams() as { id: string };
   const [recipeDetails, setRecipeDetails] = useState<any>(null);
   const [recommendations, setRecommendations] = useState<any[]>([]);
-  const navigate = useNavigate(); // Adicionando o hook useNavigate
+  const navigate = useNavigate();
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [copyText, setCopyText] = useState(false);
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
       const isMealPage = window.location.pathname.includes('/meals');
       const mealAPI = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
       const drinkAPI = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
-
       try {
         const response = await fetch(isMealPage ? mealAPI : drinkAPI);
         const data = await response.json();
         setRecipeDetails(isMealPage ? data.meals[0] : data.drinks[0]);
-        // Realizar requisição para recomendações
         const recommendationsAPI = isMealPage
           ? 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s='
           : 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
@@ -58,11 +56,11 @@ export function RecipesDetails() {
         navigate(-1);
       }
     };
-
     fetchRecipeDetails();
+    const favorites = JSON.parse(localStorage.getItem('favoriteRecipes') || '[]');
+    const isFav = favorites.some((recipe: any) => recipe.id === id);
+    setIsFavorited(isFav);
   }, [id, navigate]);
-
-  console.log(recommendations);
 
   if (!recipeDetails) {
     return <p>Loading...</p>;
@@ -82,6 +80,49 @@ export function RecipesDetails() {
     const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/);
     return videoIdMatch ? videoIdMatch[1] : '';
   };
+  const isMealPage = window.location.pathname.includes('/meals');
+
+  const handleFavoriteClick = () => {
+    const favorites = JSON.parse(localStorage.getItem('favoriteRecipes') || '[]');
+    const commonRecipeDetails = {
+      id,
+      category: recipeDetails.strCategory,
+      name: isMealPage ? recipeDetails.strMeal : recipeDetails.strDrink,
+      image: isMealPage ? recipeDetails.strMealThumb : recipeDetails.strDrinkThumb,
+    };
+    const recipeFavDetails = isMealPage
+      ? {
+        ...commonRecipeDetails,
+        type: 'meal',
+        nationality: recipeDetails.strArea,
+        alcoholicOrNot: '',
+      }
+      : {
+        ...commonRecipeDetails,
+        type: 'drink',
+        nationality: '',
+        alcoholicOrNot: 'Alcoholic',
+      };
+    const isRecipeFavorited = favorites.some(
+      (recipe: any) => recipe.id === recipeFavDetails.id,
+    );
+    if (isRecipeFavorited) {
+      const updatedFavorites = favorites.filter(
+        (recipe: any) => recipe.id !== recipeFavDetails.id,
+      );
+      localStorage.setItem('favoriteRecipes', JSON.stringify(updatedFavorites));
+    } else {
+      const updatedFavorites = [...favorites, recipeFavDetails];
+      localStorage.setItem('favoriteRecipes', JSON.stringify(updatedFavorites));
+    }
+    setIsFavorited((prevState) => !prevState);
+  };
+
+  const handleShareClick = () => {
+    const link = `${window.location.origin}/${isMealPage ? 'meals' : 'drinks'}/${id}`;
+    navigator.clipboard.writeText(link);
+    setCopyText(true);
+  };
 
   return (
     <div>
@@ -97,7 +138,7 @@ export function RecipesDetails() {
         { strMeal || strDrink }
       </h2>
       { strCategory
-        && <span data-testid="recipe-category">{strAlcoholic || strCategory}</span> }
+        && <span data-testid="recipe-category">{ strAlcoholic || strCategory }</span> }
       <ul>
         { ingredients.map((ingredient, index) => (
           <li
@@ -123,6 +164,26 @@ export function RecipesDetails() {
           opts={ { width: '360', height: '415' } }
         /> }
       </div>
+      <button
+        onClick={ handleFavoriteClick }
+      >
+        <img
+          data-testid="favorite-btn"
+          src={ isFavorited ? blackHeart : whiteHeart }
+          alt="Favorite/Unfavorite"
+        />
+      </button>
+      <button
+        data-testid="share-btn"
+        onClick={ handleShareClick }
+      >
+        Share
+      </button>
+      {copyText && (
+        <div data-testid="share-message">
+          Link copied!
+        </div>
+      )}
       <h3>Recomendações</h3>
       <ContainerCard>
         { recommendations.slice(0, 6).map((recommendation, index) => (
@@ -143,12 +204,15 @@ export function RecipesDetails() {
           </RecomendationCard>
         )) }
       </ContainerCard>
-      <GoBackButton onClick={ () => navigate(-1) }>voltar</GoBackButton>
-      <StartRecipeButton
-        data-testid="start-recipe-btn"
+      <GoBackButton
+        onClick={ () => navigate(-1) }
       >
-        Start Recipe
-      </StartRecipeButton>
+        Voltar
+      </GoBackButton>
+      <StartContinueButton
+        className={ styles.startContinueButton }
+        recipeDetails={ recipeDetails }
+      />
     </div>
   );
 }

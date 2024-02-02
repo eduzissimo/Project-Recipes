@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { drinksInProgress, apiDrinksCategory } from '../../hooks/useApiFilter';
+import { drinksInProgress } from '../../hooks/useApiFilter';
 import { FavoriteRecipeType } from '../../types';
 import blackHeart from '../../images/blackHeartIcon.svg';
 import whiteHeart from '../../images/whiteHeartIcon.svg';
@@ -19,12 +19,12 @@ function DrinksInProgress() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [copyText, setCopyText] = useState(false);
   const [allIngredientsChecked, setAllIngredientsChecked] = useState(false);
-  const categoryList = apiDrinksCategory();
 
   useEffect(() => { // esse é usado para requisição da API de bebida em si
     const fetchData = async () => {
       const result = await drinksInProgress(params);
       setRecipeDetails(result);
+      setIngredientsFilter(result);
     };
     fetchData();
   }, [params]);
@@ -46,11 +46,21 @@ function DrinksInProgress() {
     setIsFavorite(isFav);
   }, [params]);
 
-  useEffect(() => { // esse é para salvar o progresso no localStorage
+  useEffect(() => { // esse é usado para requisição da API de bebida em si
+    const savedProgress = localStorage.getItem('inProgressRecipes');
+    if (savedProgress) {
+      setCheckedIngredients(JSON.parse(savedProgress));
+    }
+    const favorites = JSON.parse(localStorage.getItem('favoriteRecipes') || '[]');
+    const isFav = favorites.some((recipe: FavoriteRecipeType) => recipe.id === params.id);
+    setIsFavorite(isFav);
+  }, [params]);
+
+  useEffect(() => {
     localStorage.setItem('inProgressRecipes', JSON.stringify(checkedIngredients));
-    setAllIngredientsChecked(ingredientsArray.every(
-      (ingredient) => checkedIngredients.includes(ingredient),
-    ));
+    setAllIngredientsChecked(
+      ingredientsArray.every((ingredient) => checkedIngredients.includes(ingredient)),
+    );
   }, [checkedIngredients]);
 
   const handleFavoriteClick = () => {
@@ -85,7 +95,7 @@ function DrinksInProgress() {
     setCopyText(true);
   };
 
-  const handleCheckboxChange = (ingredient: string) => {
+  const handleCheckboxChange = (ingredient: any) => {
     if (checkedIngredients.includes(ingredient)) {
       setCheckedIngredients(checkedIngredients.filter((item) => item !== ingredient));
     } else {
@@ -98,9 +108,6 @@ function DrinksInProgress() {
     && ingredientsFilter[key] !== ''
     && key.startsWith('strIngredient'),
   ).map((key: any) => ingredientsFilter[key]);
-  if (!recipeDetails || !categoryList) {
-    return <h1>Recipe loading...</h1>;
-  }
 
   const {
     strDrinkThumb,
@@ -197,5 +204,4 @@ function DrinksInProgress() {
     </div>
   );
 }
-
 export default DrinksInProgress;

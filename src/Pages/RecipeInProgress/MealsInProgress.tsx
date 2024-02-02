@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mealsInProgress, apiMealsCategory } from '../../hooks/useApiFilter';
+import { mealsInProgress } from '../../hooks/useApiFilter';
 import blackHeart from '../../images/blackHeartIcon.svg';
 import whiteHeart from '../../images/whiteHeartIcon.svg';
 import { FavoriteRecipeType } from '../../types';
@@ -19,7 +19,6 @@ function MealsInProgress() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [copyText, setCopyText] = useState(false);
   const [allIngredientsChecked, setAllIngredientsChecked] = useState(false);
-  const categoryList = apiMealsCategory();
 
   useEffect(() => { // esse é usado para requisição da API de comida em si
     const fetchData = async () => {
@@ -45,7 +44,6 @@ function MealsInProgress() {
     const isFav = favorites.some((recipe: FavoriteRecipeType) => recipe.id === params.id);
     setIsFavorited(isFav);
   }, [params]);
-
   useEffect(() => { // esse é para salvar o progresso no localStorage
     localStorage.setItem('inProgressRecipes', JSON.stringify(checkedIngredients));
     setAllIngredientsChecked(ingredientsArray.every(
@@ -83,21 +81,13 @@ function MealsInProgress() {
   };
 
   const handleCheckboxChange = (ingredient: string) => {
-    if (checkedIngredients.includes(ingredient)) {
+    if (Array.isArray(checkedIngredients) && checkedIngredients.includes(ingredient)) {
       setCheckedIngredients(checkedIngredients.filter((item) => item !== ingredient));
     } else {
-      setCheckedIngredients([...checkedIngredients, ingredient]);
+      setCheckedIngredients(Array.isArray(checkedIngredients) ? [...checkedIngredients,
+        ingredient] : [ingredient]);
     }
   };
-
-  const ingredientsArray = Object.keys(ingredientsFilter).filter(
-    (key: any) => ingredientsFilter[key] !== null
-    && ingredientsFilter[key] !== ''
-    && key.startsWith('strIngredient'),
-  ).map((key: any) => ingredientsFilter[key]);
-  if (!recipeDetails || !categoryList) {
-    return <h1>Recipe loading...</h1>;
-  }
 
   const handleFinishRecipe = () => {
     const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes') || '[]');
@@ -116,6 +106,12 @@ function MealsInProgress() {
     localStorage.setItem('doneRecipes', JSON.stringify(updatedDoneRecipes));
     navigate('/done-recipes');
   };
+
+  const ingredientsArray = Object.keys(ingredientsFilter).filter(
+    (key: any) => ingredientsFilter[key] !== null
+    && ingredientsFilter[key] !== ''
+    && key.startsWith('strIngredient'),
+  ).map((key: any) => ingredientsFilter[key]);
 
   const {
     strMealThumb,

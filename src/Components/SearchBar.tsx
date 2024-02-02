@@ -5,10 +5,11 @@ import searchIcon from '../images/searchIcon.svg';
 const FIRST_LETTER = 'first-letter';
 
 interface SearchBarProps {
-  fetchFunction: (searchType: string, inputValue: string) => Promise<any>;
+  fetchFunction: (searchType: string, inputValue: string) => Promise<any>,
+  setRecipes:any
 }
 
-function SearchBar({ fetchFunction }: SearchBarProps) {
+function SearchBar({ fetchFunction, setRecipes }: SearchBarProps) {
   const {
     searchMethod,
     searchValue,
@@ -74,7 +75,10 @@ function SearchBar({ fetchFunction }: SearchBarProps) {
             />
             First letter
           </label>
-          <button onClick={ handleSearch } data-testid="exec-search-btn">
+          <button
+            onClick={ () => handleSearch(setRecipes) }
+            data-testid="exec-search-btn"
+          >
             SEARCH
           </button>
         </div>

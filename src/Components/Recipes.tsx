@@ -6,19 +6,25 @@ function Recipes({ recipes }:any) {
   const recipesData = recipes && recipes.length > 0 ? recipes : search;
 
   const navigate = useNavigate();
-
   if (loading) {
     return <p>Loading...</p>;
   }
-
   if (error) {
     return <p>{error}</p>;
   }
-
   const handleCardClick = (recipeId: string, isMealsPg: boolean) => {
     const route = isMealsPg ? `/meals/${recipeId}` : `/drinks/${recipeId}`;
     navigate(route);
   };
+
+  const initializeFavoriteRecipes = () => {
+    const existingFavorites = localStorage.getItem('favoriteRecipes');
+    if (!existingFavorites) {
+      localStorage.setItem('favoriteRecipes', JSON.stringify([]));
+    }
+  };
+
+  initializeFavoriteRecipes();
 
   return (
     <span>

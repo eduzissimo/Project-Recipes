@@ -1,0 +1,11 @@
+.startContinueButton {
+  bottom: 0;
+  position: fixed;
+  right: 0;
+}
+
+.actionButtonsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
