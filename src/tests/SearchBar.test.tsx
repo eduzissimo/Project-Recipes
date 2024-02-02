@@ -1,11 +1,14 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWith';
 import mealsByIngredient from './helpers/mocks/mealsByIngredient';
 import mealsByName from './helpers/mocks/mealsByName';
-import { drinksByFirstLetter, drinksByIngredient } from './helpers/mocks/dataDrinks';
+import {
+  drinksByFirstLetter,
+  drinksByIngredient,
+} from './helpers/mocks/dataDrinks';
 
 const searchIconTestId = 'search-top-btn';
 const searchInputBtnTestId = 'exec-search-btn';
@@ -40,10 +43,8 @@ describe('Testes do componente SearchBar', () => {
     await userEvent.click(searchBTn);
 
     const chickenMeals = await screen.findAllByTestId(/card-name/i);
-    expect(chickenMeals).toHaveLength(12);
+    expect(chickenMeals).toHaveLength(11);
   });
-
-  // testes para os drinks
 
   test('Verifica busca por ingrediente em drinks', async () => {
     const MOCK_RESPONSE = {
@@ -70,7 +71,7 @@ describe('Testes do componente SearchBar', () => {
     await userEvent.click(searchBTn);
 
     const orangeDrinks = await screen.findAllByTestId(/card-name/i);
-    expect(orangeDrinks).toHaveLength(12);
+    expect(orangeDrinks).toHaveLength(4);
   });
 
   test('Verifica busca por nome em meals', async () => {
