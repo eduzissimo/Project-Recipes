@@ -13,8 +13,6 @@ const searchInputTestId = 'search-input';
 const ingredientBtnTestId = 'ingredient-search-radio';
 const nameBtnTestId = 'name-search-radio';
 const firstLetterBtnTestId = 'first-letter-search-radio';
-const ALERT_MESSAGE = "Sorry, we haven't found any recipes for these filters";
-const FIRST_LETTER_MESSAGE = 'Your search must have only 1 (one) character';
 
 describe('Testes do componente SearchBar', () => {
   test('Verifica busca por ingrediente em meals', async () => {
