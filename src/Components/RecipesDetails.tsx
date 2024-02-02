@@ -62,8 +62,6 @@ export function RecipesDetails() {
     fetchRecipeDetails();
   }, [id, navigate]);
 
-  console.log(recommendations);
-
   if (!recipeDetails) {
     return <p>Loading...</p>;
   }
