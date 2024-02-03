@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { mealsInProgress } from '../../hooks/useApiFilter';
 import blackHeart from '../../images/blackHeartIcon.svg';
 import whiteHeart from '../../images/whiteHeartIcon.svg';
 import { FavoriteRecipeType } from '../../types';
-import styled from 'styled-components';
 
 const ImageRecipe = styled.img`
   width: 100%;
