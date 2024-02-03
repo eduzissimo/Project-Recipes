@@ -42,7 +42,7 @@ describe('Testes do componente SearchBar', () => {
     await userEvent.click(ingredientRadioBtn);
     await userEvent.click(searchBTn);
 
-    const chickenMeals = await screen.findAllByTestId(/card-name/i);
+    const chickenMeals = await screen.findAllByTestId(/card-img/i);
     expect(chickenMeals).toHaveLength(11);
   });
 
@@ -70,7 +70,7 @@ describe('Testes do componente SearchBar', () => {
     await userEvent.click(ingredientRadioBtn);
     await userEvent.click(searchBTn);
 
-    const orangeDrinks = await screen.findAllByTestId(/card-name/i);
+    const orangeDrinks = await screen.findAllByTestId(/card-img/i);
     expect(orangeDrinks).toHaveLength(4);
   });
 
