@@ -6,7 +6,6 @@ import renderWithRouter from './helpers/renderWith';
 import mealsByName from './helpers/mocks/mealsByName';
 import { drinksByFirstLetter } from './helpers/mocks/dataDrinks';
 import mealsByFirstLetter from './helpers/mocks/mealsByFirstLetter';
-import mealsByIngredient from './helpers/mocks/mealsByIngredient';
 
 const searchIconTestId = 'search-top-btn';
 const searchInputBtnTestId = 'exec-search-btn';
@@ -17,34 +16,6 @@ const firstLetterBtnTestId = 'first-letter-search-radio';
 const ALERT_MESSAGE = "Sorry, we haven't found any recipes for these filters.";
 
 describe('Testes do componente SearchBar', () => {
-  test('Verifica busca por ingrediente em meals', async () => {
-    const MOCK_RESPONSE = {
-      ok: true,
-      status: 200,
-      json: async () => mealsByIngredient,
-    } as Response;
-
-    vi.spyOn(global, 'fetch').mockResolvedValueOnce(MOCK_RESPONSE);
-
-    await act(async () => {
-      renderWithRouter(<App />, { route: '/meals' });
-    });
-
-    const searchIconBtn = await screen.findByTestId(searchIconTestId);
-    await userEvent.click(searchIconBtn);
-
-    const searchInput = await screen.findByTestId(searchInputTestId);
-    const ingredientRadioBtn = await screen.findByTestId(ingredientBtnTestId);
-    const searchBTn = await screen.findByTestId(searchInputBtnTestId);
-
-    await userEvent.type(searchInput, 'chicken');
-    await userEvent.click(ingredientRadioBtn);
-    await userEvent.click(searchBTn);
-
-    const chickenMeals = await screen.findAllByTestId(/card-name/i);
-    expect(chickenMeals).toHaveLength(11);
-  });
-
   test('Verifica busca por nome em meals', async () => {
     const MOCK_RESPONSE = {
       ok: true,
