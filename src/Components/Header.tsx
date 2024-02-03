@@ -24,8 +24,11 @@ function Header({ setRecipes }:any) {
 
   const fetchMeals = async (searchType: string, inputValue: string) => {
     switch (searchType) {
-      case 'ingredient':
-        return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${inputValue}`);
+      case 'ingredient': {
+        const mealsResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${inputValue}`);
+        const mealsDataIngredient = await mealsResponse.json();
+        return mealsDataIngredient;
+      }
       case 'name': {
         const mealsResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${inputValue}`);
         const mealsData = await mealsResponse.json();
@@ -41,8 +44,11 @@ function Header({ setRecipes }:any) {
         return mealsResponse;
       }
 
-      case FIRST_LETTER:
-        return fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${inputValue}`);
+      case FIRST_LETTER: {
+        const mealsResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${inputValue}`);
+        const mealsDataFirst = await mealsResponse.json();
+        return mealsDataFirst;
+      }
       default:
         return null;
     }
@@ -50,8 +56,11 @@ function Header({ setRecipes }:any) {
 
   const fetchDrinks = async (searchType: string, inputValue: string) => {
     switch (searchType) {
-      case 'ingredient':
-        return fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${inputValue}`);
+      case 'ingredient': {
+        const drinksResponse = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${inputValue}`);
+        const drinksDataIngredient = await drinksResponse.json();
+        return drinksDataIngredient;
+      }
       case 'name': {
         const drinksResponse = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${inputValue}`);
         const drinksData = await drinksResponse.json();
@@ -64,11 +73,14 @@ function Header({ setRecipes }:any) {
           navigate(`/drinks/${idDrink}`);
           return null;
         }
-        return drinksResponse;
+        return drinksData;
       }
 
-      case FIRST_LETTER:
-        return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=${inputValue}`);
+      case FIRST_LETTER: {
+        const drinksResponse = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=${inputValue}`);
+        const drinksDataFirst = await drinksResponse.json();
+        return drinksDataFirst;
+      }
       default:
         return null;
     }
