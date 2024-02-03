@@ -102,40 +102,40 @@ const drinksCategory = {
 const drinksByFirstLetter = {
   drinks: [
     {
-      strDrink: 'A1',
-    },
-    {
-      strDrink: 'ABC',
-    },
-    {
-      strDrink: 'Ace',
-    },
-    {
-      strDrink: 'ACID',
-    },
-    {
-      strDrink: '252',
-    },
-    {
-      strDrink: '747',
-    },
-    {
-      strDrink: 'GG',
-    },
-    {
-      strDrink: 'Kir',
-    },
-    {
-      strDrink: 'Smut',
-    },
-    {
       strDrink: 'B-52',
     },
     {
       strDrink: 'B-53',
     },
     {
-      strDrink: 'Adam',
+      strDrink: 'Bijou',
+    },
+    {
+      strDrink: 'Boxcar',
+    },
+    {
+      strDrink: 'Big Red',
+    },
+    {
+      strDrink: 'Bellini',
+    },
+    {
+      strDrink: 'Bramble',
+    },
+    {
+      strDrink: 'Balmoral',
+    },
+    {
+      strDrink: 'Bluebird',
+    },
+    {
+      strDrink: 'Brooklyn',
+    },
+    {
+      strDrink: 'Bora Bora',
+    },
+    {
+      strDrink: 'Boomerang',
     },
   ],
 };
