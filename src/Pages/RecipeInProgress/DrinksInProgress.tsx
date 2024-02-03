@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { drinksInProgress } from '../../hooks/useApiFilter';
 import { FavoriteRecipeType } from '../../types';
 import blackHeart from '../../images/blackHeartIcon.svg';
 import whiteHeart from '../../images/whiteHeartIcon.svg';
+
+const ImageRecipe = styled.img`
+  width: 100%;
+`;
 
 function DrinksInProgress() {
   const params = useParams() as { id: string };
@@ -131,7 +136,7 @@ function DrinksInProgress() {
 
   return (
     <div>
-      <img
+      <ImageRecipe
         src={ strDrinkThumb }
         alt="Recipe"
         data-testid="recipe-photo"
