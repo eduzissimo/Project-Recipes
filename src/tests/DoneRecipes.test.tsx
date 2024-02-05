@@ -1,10 +1,13 @@
 import { screen, waitFor } from '@testing-library/dom';
+import { describe, vi } from 'vitest';
 import renderWithRouter from './helpers/renderWith';
 import DoneRecipes from '../Pages/DoneRecipes';
 
+const DONE_RECIPES = '/done-recipes';
+
 describe('Testa os elementos da pagina de done-recipes.', () => {
   test('Testa a rota /done-recipes.', async () => {
-    const { user } = renderWithRouter(<DoneRecipes />, { route: '/done-recipes' });
+    const { user } = renderWithRouter(<DoneRecipes />, { route: DONE_RECIPES });
     const profileBtn = screen.getByRole('button', { name: /profile icon/i });
     const profileIcon = screen.getByRole('img', { name: /profile icon/i });
     const allBtn = screen.getByRole('button', { name: /all/i });
@@ -26,8 +29,8 @@ describe('Testa os elementos da pagina de done-recipes.', () => {
     expect(profileIcon).toBeInTheDocument();
   });
 
-  test('Testando a lista dinamica.', () => {
-    renderWithRouter(<DoneRecipes />, { route: '/done-recipes' });
+  test('Testando a lista dinamica.', async () => {
+    const { user } = renderWithRouter(<DoneRecipes />, { route: DONE_RECIPES });
     let indexImg = 0;
     while (indexImg < 100) {
       const imageTestId = `${indexImg}-horizontal-image`;
@@ -53,5 +56,45 @@ describe('Testa os elementos da pagina de done-recipes.', () => {
       expect(nameElement).toBeInTheDocument();
       indexName += 1;
     }
+
+    let indexShareBtn = 0;
+    while (indexShareBtn < 100) {
+      const shareBtnTestId = `${indexShareBtn}-horizontal-share-btn`;
+      const shareBtnElement = screen.queryByTestId(shareBtnTestId);
+
+      if (!shareBtnElement) {
+        break;
+      }
+
+      expect(shareBtnElement).toBeInTheDocument();
+      user.click(shareBtnElement);
+      expect(window.location.pathname).toBe(DONE_RECIPES);
+      expect(screen.getByText('Link copied!')).toBeInTheDocument();
+
+      indexShareBtn += 1;
+    }
+  });
+
+  test('Testanto as funções', async () => {
+    const { user } = renderWithRouter(<DoneRecipes />, { route: DONE_RECIPES });
+    const allBtn = screen.getByRole('button', { name: /all/i });
+    const mealsBtn = screen.getByRole('button', { name: /meals/i });
+    const drinksBtn = screen.getByRole('button', { name: /drinks/i });
+
+    expect(allBtn).toBeInTheDocument();
+    expect(mealsBtn).toBeInTheDocument();
+    expect(drinksBtn).toBeInTheDocument();
+
+    await user.click(allBtn);
+    expect(window.location.pathname).toBe(DONE_RECIPES);
+
+    await user.click(mealsBtn);
+    expect(window.location.pathname).toBe(DONE_RECIPES);
+
+    await user.click(drinksBtn);
+    expect(window.location.pathname).toBe(DONE_RECIPES);
+
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    await user.click(allBtn);
   });
 });
