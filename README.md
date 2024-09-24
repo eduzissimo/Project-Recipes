@@ -2,7 +2,7 @@
 
 
 <details>
-  <summary><strong>👨‍💻 O que deverá fora desenvolvido</strong></summary><br />
+  <summary><strong>👨‍💻 O que foi desenvolvido</strong></summary><br />
 
   Desenvolvido um app de receitas utilizando o que há de mais moderno dentro do ecossistema React: Hooks e Context API.
 
